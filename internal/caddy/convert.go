@@ -2,6 +2,7 @@ package caddy
 
 import (
 	"encoding/json"
+
 	"github.com/caddyserver/caddy/v2"
 	"github.com/caddyserver/caddy/v2/caddyconfig"
 	"github.com/caddyserver/caddy/v2/modules/caddyhttp"
@@ -87,6 +88,9 @@ func newConfig(namespace string, store *controller.Store) (*Config, error) {
 
 func (c Converter) ConvertToCaddyConfig(namespace string, store *controller.Store) (interface{}, error) {
 	cfg, err := newConfig(namespace, store)
+	if err != nil {
+		return cfg, err
+	}
 
 	err = LoadIngressConfig(cfg, store)
 	if err != nil {
