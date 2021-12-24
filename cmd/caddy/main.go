@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/caddyserver/ingress/internal/caddy"
 	"github.com/caddyserver/ingress/internal/controller"
 	"go.uber.org/zap"
@@ -9,7 +11,6 @@ import (
 	"k8s.io/apimachinery/pkg/version"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	"time"
 )
 
 const (
@@ -51,6 +52,7 @@ func main() {
 	stopCh := make(chan struct{}, 1)
 	defer close(stopCh)
 
+	//TODO: c := controller.NewCaddyController(logger, kubeClient, cfg, shift72.NewConverter(caddy.Converter{}), stopCh)
 	c := controller.NewCaddyController(logger, kubeClient, cfg, caddy.Converter{}, stopCh)
 
 	// start the ingress controller
@@ -96,7 +98,7 @@ func createApiserverClient(logger *zap.SugaredLogger) (*kubernetes.Clientset, er
 		if err == nil {
 			return true, nil
 		}
-
+		_ = v
 		lastErr = err
 		logger.Infof("Unexpected error discovering Kubernetes version (attempt %v): %v", retries, err)
 		retries++

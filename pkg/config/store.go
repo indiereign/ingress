@@ -1,9 +1,24 @@
-package controller
+package config
 
 import (
-	"github.com/caddyserver/ingress/internal/k8s"
+	"github.com/caddyserver/ingress/pkg/k8s"
 	"k8s.io/api/networking/v1beta1"
 )
+
+// Options represents ingress controller config received through cli arguments.
+type Options struct {
+	WatchNamespace string
+	ConfigMapName  string
+	Verbose        bool
+	LeaseId        string
+}
+
+// Store contains resources used to generate Caddy config
+type Store struct {
+	Options   *Options
+	ConfigMap *k8s.ConfigMapOptions
+	Ingresses []*v1beta1.Ingress
+}
 
 // NewStore returns a new store that keeps track of K8S resources needed by the controller.
 func NewStore(opts Options) *Store {

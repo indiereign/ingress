@@ -4,20 +4,22 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/caddyserver/caddy/v2"
-	"github.com/caddyserver/ingress/internal/k8s"
+	"github.com/caddyserver/ingress/pkg/config"
+
+	"github.com/caddyserver/ingress/pkg/k8s"
 	"github.com/caddyserver/ingress/pkg/storage"
 	"go.uber.org/zap"
 	apiv1 "k8s.io/api/core/v1"
-	"k8s.io/api/networking/v1beta1"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
-	"os"
-	"time"
 
 	// load required caddy plugins
 	_ "github.com/caddyserver/caddy/v2/modules/caddyhttp/reverseproxy"
@@ -40,21 +42,6 @@ type Action interface {
 	handle(c *CaddyController) error
 }
 
-// Options represents ingress controller config received through cli arguments.
-type Options struct {
-	WatchNamespace string
-	ConfigMapName  string
-	Verbose        bool
-	LeaseId        string
-}
-
-// Store contains resources used to generate Caddy config
-type Store struct {
-	Options   *Options
-	ConfigMap *k8s.ConfigMapOptions
-	Ingresses []*v1beta1.Ingress
-}
-
 // Informer defines the required SharedIndexInformers that interact with the API server.
 type Informer struct {
 	Ingress   cache.SharedIndexInformer
@@ -71,13 +58,9 @@ type InformerFactory struct {
 	WatchedNamespace informers.SharedInformerFactory
 }
 
-type Converter interface {
-	ConvertToCaddyConfig(namespace string, store *Store) (interface{}, error)
-}
-
 // CaddyController represents an caddy ingress controller.
 type CaddyController struct {
-	resourceStore *Store
+	resourceStore *config.Store
 
 	kubeClient *kubernetes.Clientset
 
@@ -98,7 +81,7 @@ type CaddyController struct {
 	// save last applied caddy config
 	lastAppliedConfig []byte
 
-	converter Converter
+	converter config.Converter
 
 	stopChan chan struct{}
 }
@@ -106,8 +89,8 @@ type CaddyController struct {
 func NewCaddyController(
 	logger *zap.SugaredLogger,
 	kubeClient *kubernetes.Clientset,
-	opts Options,
-	converter Converter,
+	opts config.Options,
+	converter config.Converter,
 	stopChan chan struct{},
 ) *CaddyController {
 	controller := &CaddyController{
@@ -167,7 +150,7 @@ func NewCaddyController(
 	caddy.RegisterModule(storage.SecretStorage{})
 
 	// Create resource store
-	controller.resourceStore = NewStore(opts)
+	controller.resourceStore = config.NewStore(opts)
 
 	return controller
 }

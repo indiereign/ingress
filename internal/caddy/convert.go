@@ -3,32 +3,12 @@ package caddy
 import (
 	"encoding/json"
 
-	"github.com/caddyserver/caddy/v2"
+	caddy "github.com/caddyserver/caddy/v2"
 	"github.com/caddyserver/caddy/v2/caddyconfig"
 	"github.com/caddyserver/caddy/v2/modules/caddyhttp"
 	"github.com/caddyserver/caddy/v2/modules/caddytls"
-	"github.com/caddyserver/ingress/internal/controller"
+	"github.com/caddyserver/ingress/pkg/config"
 )
-
-// StorageValues represents the config for certmagic storage providers.
-type StorageValues struct {
-	Namespace string `json:"namespace"`
-	LeaseId   string `json:"leaseId"`
-}
-
-// Storage represents the certmagic storage configuration.
-type Storage struct {
-	System string `json:"module"`
-	StorageValues
-}
-
-// Config represents a caddy2 config file.
-type Config struct {
-	Admin   caddy.AdminConfig      `json:"admin,omitempty"`
-	Storage Storage                `json:"storage"`
-	Apps    map[string]interface{} `json:"apps"`
-	Logging caddy.Logging          `json:"logging"`
-}
 
 type Converter struct{}
 
@@ -55,8 +35,8 @@ func metricsServer(enabled bool) *caddyhttp.Server {
 	}
 }
 
-func newConfig(namespace string, store *controller.Store) (*Config, error) {
-	cfg := &Config{
+func newConfig(namespace string, store *config.Store) (*config.Config, error) {
+	cfg := &config.Config{
 		Logging: caddy.Logging{},
 		Apps: map[string]interface{}{
 			"tls": &caddytls.TLS{
@@ -74,9 +54,9 @@ func newConfig(namespace string, store *controller.Store) (*Config, error) {
 				},
 			},
 		},
-		Storage: Storage{
+		Storage: config.Storage{
 			System: "secret_store",
-			StorageValues: StorageValues{
+			StorageValues: config.StorageValues{
 				Namespace: namespace,
 				LeaseId:   store.Options.LeaseId,
 			},
@@ -86,7 +66,7 @@ func newConfig(namespace string, store *controller.Store) (*Config, error) {
 	return cfg, nil
 }
 
-func (c Converter) ConvertToCaddyConfig(namespace string, store *controller.Store) (interface{}, error) {
+func (c Converter) ConvertToCaddyConfig(namespace string, store *config.Store) (interface{}, error) {
 	cfg, err := newConfig(namespace, store)
 	if err != nil {
 		return cfg, err

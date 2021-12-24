@@ -2,14 +2,15 @@ package caddy
 
 import (
 	"encoding/json"
+
 	"github.com/caddyserver/caddy/v2/modules/caddyhttp"
 	"github.com/caddyserver/caddy/v2/modules/caddytls"
 	"github.com/caddyserver/ingress/internal/controller"
+	"github.com/caddyserver/ingress/pkg/config"
 )
 
-
 // LoadTLSConfig configure caddy when some ingresses have TLS certs
-func LoadTLSConfig(config *Config, store *controller.Store) error {
+func LoadTLSConfig(config *config.Config, store *config.Store) error {
 	tlsApp := config.Apps["tls"].(*caddytls.TLS)
 	httpApp := config.Apps["http"].(*caddyhttp.App)
 
@@ -18,9 +19,7 @@ func LoadTLSConfig(config *Config, store *controller.Store) error {
 	// Get all Hosts subject to custom TLS certs
 	for _, ing := range store.Ingresses {
 		for _, tlsRule := range ing.Spec.TLS {
-			for _, h := range tlsRule.Hosts {
-				hosts = append(hosts, h)
-			}
+			hosts = append(hosts, tlsRule.Hosts...)
 		}
 	}
 

@@ -8,11 +8,11 @@ import (
 	"github.com/caddyserver/caddy/v2/modules/caddyhttp"
 	"github.com/caddyserver/caddy/v2/modules/caddypki"
 	"github.com/caddyserver/caddy/v2/modules/caddytls"
-	"github.com/caddyserver/ingress/internal/controller"
+	"github.com/caddyserver/ingress/pkg/config"
 )
 
 // LoadConfigMapOptions load options from ConfigMap
-func LoadConfigMapOptions(config *Config, store *controller.Store) error {
+func LoadConfigMapOptions(config *config.Config, store *config.Store) error {
 	cfgMap := store.ConfigMap
 
 	tlsApp := config.Apps["tls"].(*caddytls.TLS)

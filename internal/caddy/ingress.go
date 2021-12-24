@@ -3,10 +3,11 @@ package caddy
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/caddyserver/caddy/v2"
 	"github.com/caddyserver/caddy/v2/caddyconfig"
 	"github.com/caddyserver/caddy/v2/modules/caddyhttp"
-	"github.com/caddyserver/ingress/internal/controller"
+	"github.com/caddyserver/ingress/pkg/config"
 	"k8s.io/api/networking/v1beta1"
 )
 
@@ -29,7 +30,7 @@ func baseRoute(upstream string) caddyhttp.Route {
 }
 
 // LoadIngressConfig creates a routelist based off of ingresses managed by this controller.
-func LoadIngressConfig(config *Config, store *controller.Store) error {
+func LoadIngressConfig(config *config.Config, store *config.Store) error {
 	// TODO :-
 	// when setting the upstream url we should should bypass kube-dns and get the ip address of
 	// the pod for the deployment we are proxying to so that we can proxy to that ip address port.
