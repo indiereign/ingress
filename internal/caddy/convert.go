@@ -47,6 +47,10 @@ func newConfig(namespace string, store *config.Store) (*config.Config, error) {
 					MetricsServer: metricsServer(store.ConfigMap.Metrics),
 					HttpServer: {
 						AutoHTTPS: &caddyhttp.AutoHTTPSConfig{},
+						// Add connection policy to allow on the ondemand tls to work
+						TLSConnPolicies: caddytls.ConnectionPolicies{
+							&caddytls.ConnectionPolicy{},
+						},
 						// Listen to both :80 and :443 ports in order
 						// to use the same listener wrappers (PROXY protocol use it)
 						Listen: []string{":80", ":443"},
