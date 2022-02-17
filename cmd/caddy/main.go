@@ -5,6 +5,7 @@ import (
 
 	"github.com/caddyserver/ingress/internal/caddy"
 	"github.com/caddyserver/ingress/internal/controller"
+	shift72 "github.com/indiereign/shift72-ingress-config"
 	"go.uber.org/zap"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -52,11 +53,11 @@ func main() {
 	stopCh := make(chan struct{}, 1)
 	defer close(stopCh)
 
-	//TODO: c := controller.NewCaddyController(logger, kubeClient, cfg, shift72.NewConverter(caddy.Converter{}), stopCh)
-	c := controller.NewCaddyController(logger, kubeClient, cfg, caddy.Converter{}, stopCh)
+	c := controller.NewCaddyController(logger, kubeClient, cfg, shift72.NewConverter(caddy.Converter{}), stopCh)
+	// c := controller.NewCaddyController(logger, kubeClient, cfg, caddy.Converter{}, stopCh)
 
 	// start the ingress controller
-	logger.Info("Starting the caddy ingress controller")
+	logger.Info("Starting the caddy ingress controller.")
 	go c.Run()
 
 	// TODO :- listen to sigterm
