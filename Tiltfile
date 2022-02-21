@@ -7,7 +7,7 @@ local_resource(
    ignore=['bin/ingress-controller', 'ingress-controller'])
 
 docker_build(
-  "registry.localhost:4999/caddy-ingress",
+  "registry.localhost:4999/shift72_ingress",
   ".",
   dockerfile='./Dockerfile.tilt')
 
