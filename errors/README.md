@@ -1,0 +1,1 @@
+Error responses that caddy can be configured to respond with

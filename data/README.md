@@ -1,0 +1,1 @@
+Temp files to be copied to the image

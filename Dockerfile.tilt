@@ -4,5 +4,9 @@ RUN apk --update add ca-certificates
 FROM alpine
 ADD bin/ingress-controller ingress-controller
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY ./errors /errors
+COPY ./data /data
+RUN ls -lah /data
+RUN ls -lah /errors
 EXPOSE 80 443
 ENTRYPOINT ["/ingress-controller"]

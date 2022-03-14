@@ -12,6 +12,7 @@ require (
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/pires/go-proxyproto v0.3.1
 	github.com/pkg/errors v0.9.1
+	github.com/shift72/caddy-geo-ip v0.4.0 // indirect
 	go.uber.org/zap v1.21.0
 	gopkg.in/go-playground/pool.v3 v3.1.1
 	k8s.io/api v0.19.4

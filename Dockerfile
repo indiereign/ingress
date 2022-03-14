@@ -16,5 +16,7 @@ RUN apk --update add ca-certificates
 FROM scratch
 COPY --from=builder /app/bin/ingress-controller .
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY ./errors ./errors
+COPY ./data ./data
 EXPOSE 80 443
 ENTRYPOINT ["/ingress-controller"]
