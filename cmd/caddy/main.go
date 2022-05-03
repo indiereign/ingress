@@ -8,6 +8,7 @@ import (
 
 	"github.com/caddyserver/ingress/internal/caddy"
 	"github.com/caddyserver/ingress/internal/controller"
+
 	shift72 "github.com/indiereign/ingress-config"
 	"go.uber.org/zap"
 	v1 "k8s.io/api/core/v1"
