@@ -2,3 +2,7 @@
 bin
 vendor
 .idea/
+/data/*
+!/data/README.md
+/errors/*
+!/errors/README.md
