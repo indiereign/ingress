@@ -105,7 +105,7 @@ func createApiserverClient(logger *zap.SugaredLogger) (*kubernetes.Clientset, er
 		if err == nil {
 			return true, nil
 		}
-
+		_ = v
 		lastErr = err
 		logger.Infof("Unexpected error discovering Kubernetes version (attempt %v): %v", retries, err)
 		retries++
